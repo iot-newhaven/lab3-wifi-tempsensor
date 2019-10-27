@@ -17,12 +17,12 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 
 #define BOARD_SYSTEM_LED                D7
 
-#define SYSTEM_HEARTBEAT_MS             (250)
+#define SYSTEM_HEARTBEAT_TICK_MS        (250)
 
 #define SYSTEM_DISPLAY_UPDATE_MS        (5000)
 
-#define WIFI_AP_NAME    "Ramirez"
-#define WIFI_AP_PASSW   "rusty2009"
+#define WIFI_AP_NAME    "ececs"
+#define WIFI_AP_PASSW   "buckman203"
 
 typedef enum {
     SYS_STATE_INIT,
@@ -50,8 +50,10 @@ void SystemUIrefresh(void)
 }
 
 
-// System heartbeat loop()
-// Flash Board LED to indicate loop() execution
+// System heartbeat 
+// Use software timer, this indicates state of the System
+Timer timerSysHeartbeat(SYSTEM_HEARTBEAT_TICK_MS, SystemHeartbeat);
+
 void SystemHeartbeat(void)
 {
     static bool firstTime = true;
@@ -76,8 +78,6 @@ void SystemHeartbeat(void)
             ledState = true;
         }
     }
-
-    delay(SYSTEM_HEARTBEAT_MS);
 }
 
 void SystemStateProc(void)
@@ -89,8 +89,11 @@ void SystemStateProc(void)
             break;
 
         case SYS_STATE_NET_CONNECT:
+            NetWifiStop();
+
             // Start WiFi connection
             NetWifiStart(WIFI_AP_NAME, WIFI_AP_PASSW);
+
             _systemState = SYS_STATE_NET_PENDING;
             break;
 
@@ -121,7 +124,7 @@ void SystemStateProc(void)
             break;
     }
 
-    SystemHeartbeat();
+    //SystemHeartbeat();
 
     // Run the Serial Monitor processor
     // Check for incoming commands from serial port
@@ -145,9 +148,12 @@ void setup()
     // Start UI refresh timer
     // Update the display (OLED) every SYSTEM_DISPLAY_UPDATE_MS
     timerSystemUIupdate.start();
-
+    
     // Initialize Cloud engine
     NetIotInit();
+
+    // Start System heartbeat
+    timerSysHeartbeat.start();
 }
 
 // loop() runs over and over again, as quickly as it can execute.
