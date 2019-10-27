@@ -124,8 +124,6 @@ void SystemStateProc(void)
             break;
     }
 
-    //SystemHeartbeat();
-
     // Run the Serial Monitor processor
     // Check for incoming commands from serial port
     SerialMonitorInputProc();
