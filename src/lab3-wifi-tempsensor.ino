@@ -13,6 +13,7 @@ SYSTEM_MODE(SEMI_AUTOMATIC);
 #include "include/display-oled.h"
 #include "include/serial-monitor.h"
 #include "include/net-wifi.h"
+#include "include/net-iot.h"
 
 #define BOARD_SYSTEM_LED                D7
 
@@ -27,7 +28,9 @@ typedef enum {
     SYS_STATE_INIT,
     SYS_STATE_NET_CONNECT,
     SYS_STATE_NET_PENDING,
-    SYS_STATE_NET_READY
+    SYS_STATE_NET_READY,
+    SYS_STATE_CLOUD_PENDING,
+    SYS_STATE_CLOUD_READY
 }SystemState_t;
 
 static SystemState_t _systemState = SYS_STATE_INIT;
@@ -41,6 +44,9 @@ void SystemUIrefresh(void)
     // Get the average Temperature from the sensor task
     // Update OLED display
     DisplayOLEDupdateTemp(SensorTempGetAverage());
+
+    // refresh/update Cloud data
+    NetIoTupdate();
 }
 
 
@@ -98,6 +104,20 @@ void SystemStateProc(void)
 
         case SYS_STATE_NET_READY:
             // Connected to WiFi AP
+            NetIoTstart();
+            SerialMonitorPrint("Connecting to Cloud...");
+            _systemState = SYS_STATE_CLOUD_PENDING;
+            break;
+
+        case SYS_STATE_CLOUD_PENDING:
+            if(NetIoTready())
+            {
+                _systemState = SYS_STATE_CLOUD_READY;
+                SerialMonitorPrint("Cloud ready!");
+            }
+            break;
+
+        case SYS_STATE_CLOUD_READY:
             break;
     }
 
@@ -125,6 +145,9 @@ void setup()
     // Start UI refresh timer
     // Update the display (OLED) every SYSTEM_DISPLAY_UPDATE_MS
     timerSystemUIupdate.start();
+
+    // Initialize Cloud engine
+    NetIotInit();
 }
 
 // loop() runs over and over again, as quickly as it can execute.
