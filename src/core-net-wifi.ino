@@ -3,15 +3,9 @@
 void NetWifiStart(const char *wifiAPname,
                   const char *password)
 {
-    WiFi.off();
-
-    delay(1000);
-
     // Ensure that WiFi module is on
     WiFi.on();
-
-    WiFi.clearCredentials();
-    
+   
     // Set up WPA2 access point "My AP" with password "mypassword" and AES cipher
     WiFiCredentials credentials(wifiAPname, WPA2);
     
@@ -22,14 +16,17 @@ void NetWifiStart(const char *wifiAPname,
 
     // Connect if settings were successfully saved   
     WiFi.connect();
-    
-    //Particle.connect();
-    //waitFor(Particle.connected, 30000);
+
+    delay(1000);
 }
 
 void NetWifiStop(void)
 {
+    WiFi.clearCredentials();
+ 
+    WiFi.off();
 
+    delay(1000);
 }
 
 bool NetWifiReady(void)

@@ -42,6 +42,7 @@ void SerialMonitorInputProc(void)
     while (Serial.available())
     {
         _messageInBuffer[byteOffset] = Serial.read();
+        Serial.write(_messageInBuffer[byteOffset]);
         byteOffset++;
     }
 
