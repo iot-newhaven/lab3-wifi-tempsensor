@@ -1,5 +1,5 @@
 /*
- * Project lab3-wifi-tempsensor
+ * Project project-4-tempsensor-wifi
  * Description:
  * Author:
  * Date:
