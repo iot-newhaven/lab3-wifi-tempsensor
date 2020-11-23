@@ -8,18 +8,14 @@
 
 #include "application.h"
 // Include MicroOLED library
-#include "SparkFunMicroOLED.h" 
+#include "SparkFunMicroOLED.h"
 #include "math.h"
 
 #include "SparkFunTMP102.h"
 
-#define BOARD_SYSTEM_LED      D7
-#define BOARD_HEARTBEAT_MS    (1000)
+#define BOARD_SYSTEM_LED D7
+#define BOARD_HEARTBEAT_MS (1000)
 
-enum iot_wifi_mode_t {
-   IOT_WIFI_WPA2,
-   IOT_WIFI_ENTERPRISE
-};
 
 /* code */
 class IOTboard
@@ -29,7 +25,7 @@ public:
 
    void start();
 
-   void printToDisplay(const char* text);
+   void printToDisplay(const char *text);
 
    float getTempF();
 
@@ -40,8 +36,11 @@ public:
    char getSerialInput();
 
    void connectToWiFi(const char *SSID,
-                      const char *password,
-                      iot_wifi_mode_t mode);
+                      const char *password);
+
+   void connectToWiFi(const char *SSID,
+                      const char *user_name,
+                      const char *password);
 
    void disconnectWiFi(void);
 

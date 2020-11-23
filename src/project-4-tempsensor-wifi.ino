@@ -55,7 +55,7 @@ void appStateMachine(void)
 
             iot_kit.printToSerialOut("Connecting to %s...", WIFI_AP_SSID);
 
-            iot_kit.connectToWiFi(WIFI_AP_SSID, WIFI_AP_PASSW, IOT_WIFI_WPA2);
+            iot_kit.connectToWiFi(WIFI_AP_SSID, WIFI_AP_PASSW);
 
             _app_state = APP_STATE_NET_WAIT;
             break;
