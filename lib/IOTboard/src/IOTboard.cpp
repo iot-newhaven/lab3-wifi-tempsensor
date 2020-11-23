@@ -113,6 +113,28 @@ float IOTboard::getTempF() {
     return (temperature);
 }
 
+float IOTboard::getTempC()
+{
+    // The core of your code will likely live here.
+    float temperature;
+
+    // Turn sensor on to start temperature measurement.
+    // Current consumtion typically ~10uA.
+    temp_sensor.wakeup();
+
+    // read temperature data
+    temperature = temp_sensor.readTempC();
+    //temperature = sensor.readTempC();
+
+    // Place sensor in sleep mode to save power.
+    // Current consumtion typically <0.5uA.
+    temp_sensor.sleep();
+
+    delayMicroseconds(100);
+
+    return (temperature);
+}
+
 void IOTboard::printToSerialOut(const char *fmt, ...)
 {
     va_list args;
