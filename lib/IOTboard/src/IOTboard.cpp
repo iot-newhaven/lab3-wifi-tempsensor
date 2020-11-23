@@ -31,15 +31,17 @@ static void heartbeat(void)
 }
 
 // Class constructor
-IOTboard::IOTboard(bool wait_for_serial) {
+IOTboard::IOTboard(bool wait_for_serial)
+{
     wait_serial_monitor = wait_for_serial;
-    
+
     memset(iot_ip_addr, 0, sizeof(iot_ip_addr));
 
     memset(serial_out_buffer, 0, sizeof(serial_out_buffer));
 }
 
-void IOTboard::start() {
+void IOTboard::start()
+{
     // Setup outputs
     pinMode(BOARD_SYSTEM_LED, OUTPUT);
     digitalWrite(BOARD_SYSTEM_LED, HIGH);
@@ -51,7 +53,7 @@ void IOTboard::start() {
     oled.clear(PAGE);     // Clear the screen
 
     delay(100);
-    
+
     // Start TM102 Sensor
     temp_sensor.begin();
 
@@ -71,7 +73,7 @@ void IOTboard::start() {
     // Start serial port
     Serial.begin(115200); // open serial over USB
 
-    if(wait_serial_monitor)
+    if (wait_serial_monitor)
     {
         // Wait until PC is connected to the serial port
         while (!Serial.isConnected())
@@ -81,8 +83,9 @@ void IOTboard::start() {
     }
 }
 
-void IOTboard::printToDisplay(const char* text) {
-    
+void IOTboard::printToDisplay(const char *text)
+{
+
     oled.setCursor(0, 0); // Set cursor to top-left
     oled.clear(PAGE);     // Clear the screen
     oled.print(text);
@@ -92,7 +95,8 @@ void IOTboard::printToDisplay(const char* text) {
     delayMicroseconds(100);
 }
 
-float IOTboard::getTempF() {
+float IOTboard::getTempF()
+{
     // The core of your code will likely live here.
     float temperature;
 
@@ -138,7 +142,7 @@ float IOTboard::getTempC()
 void IOTboard::printToSerialOut(const char *fmt, ...)
 {
     va_list args;
-    
+
     va_start(args, fmt);
 
     memset(serial_out_buffer, 0, sizeof(serial_out_buffer));
@@ -159,12 +163,35 @@ char IOTboard::getSerialInput()
         Serial.readBytes(&input_cmd, 1);
     }
 
-    return(input_cmd);
+    return (input_cmd);
 }
 
 void IOTboard::connectToWiFi(const char *SSID,
-                             const char *password,
-                             iot_wifi_mode_t mode)
+                             const char *user_name,
+                             const char *password)
+{
+    // Ensure that WiFi module is on
+    WiFi.on();
+
+    WiFiCredentials credentials(SSID, WPA2_ENTERPRISE);
+
+    credentials.setEapType(WLAN_EAP_TYPE_PEAP);
+
+    credentials.setIdentity(user_name);
+
+    credentials.setPassword(password)
+        .setCipher(WLAN_CIPHER_AES);
+
+    WiFi.setCredentials(credentials);
+
+    // Connect if settings were successfully saved
+    WiFi.connect();
+
+    delay(1000);
+}
+
+void IOTboard::connectToWiFi(const char *SSID,
+                             const char *password)
 {
     // Ensure that WiFi module is on
     WiFi.on();
@@ -201,7 +228,7 @@ bool IOTboard::isWiFiReady(void)
     return rc;
 }
 
-const char * IOTboard::getWiFiIP()
+const char *IOTboard::getWiFiIP()
 {
     static IPAddress ip;
 
@@ -209,5 +236,5 @@ const char * IOTboard::getWiFiIP()
 
     snprintf(iot_ip_addr, sizeof(iot_ip_addr), "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 
-    return ((const char*)iot_ip_addr);
+    return ((const char *)iot_ip_addr);
 }
