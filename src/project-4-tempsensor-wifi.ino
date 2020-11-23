@@ -33,6 +33,11 @@ static app_state_t _app_state = APP_STATE_INIT;
 static unsigned long _last_cloudupdate_tick = 0;
 static unsigned long _last_event_tick = 0;
 
+void appCommandHandler(String command)
+{
+    iot_kit.printToSerialOut(command.c_str());
+}
+
 void appStateMachine(void)
 {
 
@@ -72,7 +77,8 @@ void appStateMachine(void)
             // Start Cloud link
             iot_kit.printToSerialOut("Connect to Cloud server:");
 
-            cloud_kit.start((double)iot_kit.getTempC());
+            // Setup cloud connection
+            cloud_kit.start((double)iot_kit.getTempC(), appCommandHandler);
 
             _app_state = APP_STATE_CLOUD_WAIT;
 

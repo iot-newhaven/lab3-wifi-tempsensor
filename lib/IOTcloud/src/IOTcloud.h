@@ -8,13 +8,15 @@
 
 #include "application.h"
 
+typedef void (*iot_cmd_func_t)(String cmd);
+
 /* code */
 class IOTcloud
 {
 public:
     IOTcloud();
 
-    void start(double init_temp_F);
+    void start(double init_temp_F, iot_cmd_func_t cmd_func);
 
     bool isReady(void);
 
@@ -26,6 +28,8 @@ private:
     // IOT parameters
     bool iot_cloud_enabled;
     double iot_temperature_F;
+
+    int commandHandler(String command);
 };
 
 #endif
