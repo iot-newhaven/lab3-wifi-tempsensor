@@ -1,10 +1,10 @@
-# lab3-wifi-tempsensor
+# Project-4-Tempsensor-wifi
 
-A Particle project named lab3-wifi-tempsensor
+A Particle project named project-4-tempsensor-wifi
 
 ## Welcome to your project!
 
-Every new Particle project is composed of 3 important elements that you'll see have been created in your project directory for lab3-wifi-tempsensor.
+Every new Particle project is composed of 3 important elements that you'll see have been created in your project directory for project-4-tempsensor-wifi.
 
 #### ```/src``` folder:  
 This is the source folder that contains the firmware files for your project. It should *not* be renamed. 
