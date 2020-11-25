@@ -72,7 +72,7 @@ void appStateMachine(void)
             // Start Cloud link
             iot_kit.printToSerialOut("Connect to Cloud server:");
 
-            cloud_kit.start((double)iot_kit.getTempC());
+            cloud_kit.start((double)iot_kit.getTempF());
 
             _app_state = APP_STATE_CLOUD_WAIT;
 
